@@ -80,40 +80,132 @@ lumin-quiz-app/
 
 ---
 
-## Contributions are Welcome 
-Just follow the following steps
+# 🚀 Project Setup & Contribution Guide
 
-1. Fork the repo
+Welcome! 👋
+This project is open for contributions, and you're just a few steps away from running it locally and making an impact.
 
-2. Clone the forked repo
+---
+
+## ⚙️ Local Setup
+
+Get the project up and running locally in just a few steps:
+
+### 1. Fork the Repository
+
+Click on the **Fork** button at the top right of this repo.
+
+---
+
+### 2. Clone Your Fork
+
 ```bash
-   git clone <your_forked_repo_url>
+git clone <your_forked_repo_url>
 ```
 
-3. Setup backend `.env`
-```bash
+---
 
+### 3. Setup Backend Environment (`.env`)
+
+Create a `.env` file inside the `server` folder and add:
+
+```env
+PORT=5000
+MONGO_URI="mongodb_uri_here"
+JWT_SECRET="your_jwt_secret_here"
 ```
 
-4. Go to backend folder and install dependencies
-```bash
-   cd server
-   npm install
-   cd ..
+---
+
+### 4. Setup Frontend Environment (`.env`)
+
+Create a `.env` file inside the `client` folder and add:
+
+```env
+VITE_BACKEND_API_URL="http://localhost:5000/api/"
 ```
 
-5. Go to Frontend folder and install dependencies
+---
+
+### 5. Install Backend Dependencies
+
 ```bash
-   cd client
-   npm install
+cd server
+npm install
+cd ..
 ```
 
-7. Start Backend
+---
+
+### 6. Install Frontend Dependencies
+
 ```bash
-   node server.js
+cd client
+npm install
 ```
 
-8. Start Frontend
+---
+
+### 7. Start Backend Server
+
 ```bash
-   npm run dev
+node server.js
 ```
+
+---
+
+### 8. Start Frontend
+
+```bash
+npm run dev
+```
+
+---
+
+## 🤝 Want to Contribute?
+
+We actively welcome contributions and would love to have you onboard 🚀
+
+### 🔥 How to Start
+
+- Set up the project locally using the steps above
+- Head over to the **Issues** section
+
+### 💡 Ways to Contribute
+
+- 👉 **Work on existing issues** — Comment on any issue you want to work on and I'll assign it to you
+- 👉 **Create new issues** — Found a bug or have a feature idea? Raise an issue and start working on it
+
+---
+
+## 🛠️ Contribution Workflow
+
+1. **Create a new branch**
+
+```bash
+git checkout -b <branch_name>
+```
+
+2. **Make your changes** ✨
+
+3. **Push your branch**
+
+```bash
+git push origin <branch_name>
+```
+
+4. **Open a Pull Request** 🚀
+
+---
+
+## 🌟 Why Contribute?
+
+- Improve your real-world development skills
+- Collaborate with other developers
+- Build something meaningful together
+
+---
+
+## ⚡ Final Note
+
+Don't overthink — pick an issue, start coding, and ship it! 🚀
