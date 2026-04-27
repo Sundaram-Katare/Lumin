@@ -10,6 +10,7 @@ import QuizStart from './pages/QuizStart';
 import Leaderboard from './pages/Leaderboard';
 import LiveQuiz from './pages/LiveQuiz';
 import Code from './pages/Code';
+import FAQ from './pages/FAQ'
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path='/leaderboard' element={<Leaderboard />} />
         <Route path='/live' element={<LiveQuiz />} />
         <Route path='/code' element={<Code /> } />
+        <Route path='/FAQ' element={<FAQ />} />
       </Routes>
     </Router>
   );
