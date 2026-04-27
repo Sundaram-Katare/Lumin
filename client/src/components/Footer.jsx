@@ -25,6 +25,7 @@ export default function Footer() {
               <li className="hover:text-blue-200 cursor-pointer transition">Mission</li>
               <li className="hover:text-blue-200 cursor-pointer transition">Trivia</li>
               <li className="hover:text-blue-200 cursor-pointer transition">Docs</li>
+              <li className="hover:text-blue-200 cursor-pointer transition" onClick={() => window.open("/faq", "_blank")}>FAQ</li>
             </ul>
           </div>
           <div>
