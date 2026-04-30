@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { FiCopy, FiCheck } from "react-icons/fi";
+import toast from 'react-hot-toast';
 
 export default function Code({ code }) {
   const [copied, setCopied] = useState(false);
@@ -9,10 +10,12 @@ export default function Code({ code }) {
     if (!code) return;
     try {
       await navigator.clipboard.writeText(code);
+      toast.success("Code copied to the clipboard!") ;
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
     } catch (err) {
       setCopied(false);
+      toast.error("failed to copy code") ;
     }
   };
 
