@@ -35,6 +35,7 @@ const quizSchema = new mongoose.Schema({
     live: { type: String, default: "Yes" },
     code: { type: String },
     image: { type: String, default: "images/room.png" },
+    difficulty: { type: String, required: true },
     createdAt: {
         type: Date,
         default: Date.now(),

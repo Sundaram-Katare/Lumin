@@ -12,6 +12,16 @@ export default function QuizPage({ id }) {
 
   const navigate = useNavigate();
 
+  const getDifficultyColor = (difficulty) => {
+  if (difficulty=="Easy") {
+    return "bg-green-700";
+  } else if (difficulty=="Medium") {
+    return "bg-yellow-700";
+  } else {
+    return "bg-red-700";
+  }
+};
+
   const backToTriviaPage = () => {
     navigate("/trivia");
   };
@@ -51,6 +61,9 @@ export default function QuizPage({ id }) {
           <div className="flex items-center gap-4 mb-6">
             <span className="inline-block bg-blue-700 text-white text-lg font-bold px-5 py-2 rounded-2xl shadow">
               {quiz.questions.length} Questions
+            </span>
+            <span className={`inline-block ${getDifficultyColor(quiz.difficulty)} text-white text-lg font-bold px-5 py-2 rounded-2xl shadow`}>
+              {quiz.difficulty}
             </span>
           </div>
           <button

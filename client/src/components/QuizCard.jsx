@@ -13,6 +13,16 @@ export default function QuizCard({ quiz }) {
     });
   };
 
+    const getDifficultyColor = (difficulty) => {
+  if (difficulty=="Easy") {
+    return "bg-green-700";
+  } else if (difficulty=="Medium") {
+    return "bg-yellow-700";
+  } else {
+    return "bg-red-700";
+  }
+};
+
   return (
     <motion.div
       className="p-6 bg-white rounded-3xl border-4 border-blue-200 flex flex-col items-center max-w-xs mx-auto shadow-2xl transition-all duration-300 hover:scale-105 sm:max-w-sm md:max-w-md"
@@ -32,6 +42,12 @@ export default function QuizCard({ quiz }) {
       <h2 className="text-xl sm:text-2xl font-bold text-center mb-1 text-gray-800">
         {quiz.title}
       </h2>
+
+      <div className="flex items-center gap-4 mb-6">
+        <span className={`inline-block ${getDifficultyColor(quiz.difficulty)} text-white text-lg font-bold px-5 py-2 rounded-2xl shadow`}>
+          {quiz.difficulty}
+        </span>
+      </div>
 
       <p className="text-gray-500 text-center mb-6 px-2 sm:px-4 text-sm sm:text-base">
         Create, customize, and challenge your friends!

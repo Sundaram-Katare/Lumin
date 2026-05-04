@@ -3,7 +3,7 @@ import {nanoid, customAlphabet} from 'nanoid';
 
 export const addQuiz = async (req, res) => {
     try {
-        const { title, description, questions, image, isPrivate } = req.body;
+        const { title, description, questions, image, isPrivate, difficulty } = req.body;
 
         if(!title || !description || !questions ){
             return res.status(401).json("All fields are required. ");
@@ -21,6 +21,7 @@ export const addQuiz = async (req, res) => {
             code: code,
             image,
             isPrivate,
+            difficulty
         });
 
       return res.status(200).json({message: "Quiz created successfully", code: quiz?.code});

@@ -24,6 +24,7 @@ export default function AddQuiz() {
 
     const [loading, setLoading] = useState(false);
 
+    const [difficulty, setDifficulty] = useState("Easy");
     
     const addQuestion = () => {
         setQuestions([
@@ -65,7 +66,7 @@ export default function AddQuiz() {
 
         setLoading(true);
         try {
-            const payload = { title, description, questions, imageUrl, live:"Yes" };
+            const payload = { title, description, questions, imageUrl, live:"Yes", difficulty };
            const response = await axios.post(`${BACKEND_API_URL}quiz/add`, payload);
            console.log(response.data.code);
            setCode(response.data.code);
@@ -122,6 +123,21 @@ export default function AddQuiz() {
                             onChange={(e) => setDescription(e.target.value)}
                             className="mt-1 w-full px-4 py-2 rounded-lg border border-gray-600 bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
                         />
+                    </div>
+
+                    <div className="mt-3 mb-6">
+                        <label className="text-sm font-medium text-gray-300 mr-2">
+                            Quiz Difficulty:
+                        </label>
+                        <select
+                            value={difficulty}
+                            onChange={(e) => setDifficulty(e.target.value)}
+                            className="px-3 py-2 rounded-lg border border-gray-600 bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                        >
+                            <option value="Easy">Easy</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Hard">Hard</option>
+                        </select>
                     </div>
 
                     <div className="space-y-8">
