@@ -145,6 +145,21 @@ npm run dev
 
 The app will be available at `http://localhost:5173`.
 
+### Run with Docker
+
+Docker Compose runs the frontend, backend, and a local MongoDB instance together.
+
+```bash
+cp .env.example .env
+# Set a strong JWT_SECRET in .env
+docker compose up --build
+```
+
+Open `http://localhost:5173`. The frontend proxies `/api` requests to the backend,
+so no client-side API URL configuration is needed for the Docker setup. Stop the
+stack with `docker compose down`; add `-v` only if you also want to remove the
+MongoDB data volume.
+
 ---
 
 ## 🔑 API Routes
