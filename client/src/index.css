@@ -1,3 +1,67 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html {
+  background: #030008;
+}
+
+html[data-theme="light"] {
+  background: #f6f3ff;
+  color-scheme: light;
+}
+
+/*
+ * The existing interface uses Tailwind utility classes directly in each page.
+ * These overrides only apply when light mode is chosen, leaving the current
+ * dark design untouched while giving shared dark surfaces a light equivalent.
+ */
+html[data-theme="light"] body {
+  background: #f6f3ff;
+  color: #201438;
+}
+
+html[data-theme="light"] [class*="min-h-screen"][class*="bg-gradient"],
+html[data-theme="light"] [class*="w-screen"][class*="bg-gradient"] {
+  background-image: linear-gradient(135deg, #f7f2ff 0%, #e9ddff 52%, #fdeef8 100%) !important;
+}
+
+html[data-theme="light"] .bg-gray-950,
+html[data-theme="light"] .bg-gray-900,
+html[data-theme="light"] .bg-gray-800,
+html[data-theme="light"] .bg-gray-700,
+html[data-theme="light"] .bg-black,
+html[data-theme="light"] .mobile-nav-menu {
+  background-color: #ffffff !important;
+}
+
+html[data-theme="light"] .text-white,
+html[data-theme="light"] .text-gray-400,
+html[data-theme="light"] .text-gray-300,
+html[data-theme="light"] .text-gray-200 {
+  color: #30234a !important;
+}
+
+html[data-theme="light"] .border-gray-800,
+html[data-theme="light"] .border-gray-700,
+html[data-theme="light"] .border-gray-600 {
+  border-color: #d8cdec !important;
+}
+
+.theme-toggle {
+  background: rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+}
+
+.theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+html[data-theme="light"] .theme-toggle {
+  background: #ede5ff;
+  color: #4c287b;
+}
+
+html[data-theme="light"] .theme-toggle:hover {
+  background: #dfd0ff;
+}
