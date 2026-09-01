@@ -1,4 +1,4 @@
-FROM node:22-alpine AS build
+FROM node:22-alpine
 
 WORKDIR /app
 
@@ -7,16 +7,9 @@ RUN npm ci
 
 COPY . .
 
-# Vite replaces this value while building. Keep API calls same-origin so the
-# browser can reach the backend through the Nginx proxy in the final image.
-ARG VITE_BACKEND_API_URL=/api/
-ENV VITE_BACKEND_API_URL=$VITE_BACKEND_API_URL
-RUN npm run build
+ENV NODE_ENV=development
+ENV CHOKIDAR_USEPOLLING=true
 
-FROM nginx:1.27-alpine
+EXPOSE 5173
 
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-COPY --from=build /app/dist /usr/share/nginx/html
-
-EXPOSE 80
-
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]

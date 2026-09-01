@@ -1,27 +1,32 @@
 services:
   client:
-    build:
-      context: ./client
-      args:
-        VITE_BACKEND_API_URL: /api/
+    build: ./client
     ports:
-      - "5173:80"
+      - "5173:5173"
+    environment:
+      VITE_BACKEND_API_URL: http://localhost:3000/api/
+      CHOKIDAR_USEPOLLING: "true"
+    volumes:
+      - ./client:/app
+      - /app/node_modules
     depends_on:
       - server
-    restart: unless-stopped
 
   server:
-    build:
-      context: ./server
+    build: ./server
+    ports:
+      - "3000:3000"
     environment:
-      NODE_ENV: production
+      NODE_ENV: development
       PORT: 3000
       MONGO_URI: mongodb://mongo:27017/lumin
       JWT_SECRET: ${JWT_SECRET:?Set JWT_SECRET in .env}
+    volumes:
+      - ./server:/app
+      - /app/node_modules
     depends_on:
       mongo:
         condition: service_healthy
-    restart: unless-stopped
 
   mongo:
     image: mongo:8
@@ -34,8 +39,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    restart: unless-stopped
 
 volumes:
   mongo-data:
-
