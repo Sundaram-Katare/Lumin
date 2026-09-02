@@ -145,6 +145,22 @@ npm run dev
 
 The app will be available at `http://localhost:5173`.
 
+### Run with Docker (development)
+
+Docker Compose runs the Vite development server, Express server (with `nodemon`),
+and a local MongoDB instance. Changes to client and server files are picked up
+automatically.
+
+```bash
+cp .env.example .env
+# Set a strong JWT_SECRET in .env
+docker compose up --build
+```
+
+Open `http://localhost:5173`. The frontend calls the backend at
+`http://localhost:3000`. Stop the stack with `docker compose down`; add `-v` only
+if you also want to remove the MongoDB data volume.
+
 ---
 
 ## 🔑 API Routes
