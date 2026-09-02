@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { incrementPoints } from "../feature/auth/authSlice.js";
@@ -15,6 +15,9 @@ import {
   Cell,
 } from "recharts";
 import Navbar from "../components/Navbar";
+import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
+import { FaFilePdf } from "react-icons/fa";
 
 export default function QuizStart() {
   const location = useLocation();
@@ -52,12 +55,9 @@ export default function QuizStart() {
     if (isCorrect && quiz.live === "No") {
       try {
         await dispatch(incrementPoints()).unwrap();
-        // Optionally show success message e.g. toast.success("Correct! +10 points");
       } catch (err) {
-        // Optionally show error message e.g. toast.error("Could not update points");
+        // Handled silently
       }
-    } else {
-      // Optionally show error message e.g. toast.error("Incorrect");
     }
   }
 
@@ -66,15 +66,12 @@ export default function QuizStart() {
   }
 
   async function handleNext() {
-    // Save answer
     const newAnswers = [...answers];
     newAnswers[currentIndex] = selectedOption;
     setAnswers(newAnswers);
 
-    // Submit current answer
     await submitAnswer(selectedOption, currentQuestion);
 
-    // Update score locally
     if (selectedOption === currentQuestion.correctAnswerIndex) {
       setScore(score + 1);
     }
@@ -107,12 +104,128 @@ export default function QuizStart() {
   const correctCount = answers.filter((ans, idx) => ans === quiz.questions[idx].correctAnswerIndex).length;
   const incorrectCount = answers.filter((ans, idx) => ans !== null && ans !== quiz.questions[idx].correctAnswerIndex).length;
   const unansweredCount = totalQuestions - correctCount - incorrectCount;
+  const accuracy = totalQuestions > 0 ? ((correctCount / totalQuestions) * 100).toFixed(1) : "0.0";
 
   const resultPieData = [
     { name: "Correct", value: correctCount, color: "#f8d215ff" },
     { name: "Incorrect", value: incorrectCount, color: "#ff0c0cff" },
     { name: "Unanswered", value: unansweredCount, color: "#94a3b8" }
   ];
+
+  const exportResultPDF = () => {
+    const doc = new jsPDF({
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4",
+    });
+
+    // Background header band
+    doc.setFillColor(15, 23, 42); // slate-900
+    doc.rect(0, 0, 210, 35, "F");
+
+    // Title & App Name
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(22);
+    doc.setTextColor(255, 255, 255);
+    doc.text("Lumin Quiz Result", 14, 18);
+
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(203, 213, 225);
+    doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 26);
+
+    // Quiz Information Card
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(30, 41, 59);
+    doc.text(`Quiz: ${quiz.title}`, 14, 46);
+
+    if (user?.name || user?.username) {
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(100, 116, 139);
+      doc.text(`Candidate: ${user.name || user.username}`, 14, 52);
+    }
+
+    // Summary Score Badges
+    const startY = user?.name || user?.username ? 58 : 52;
+    doc.setFillColor(241, 245, 249);
+    doc.roundedRect(14, startY, 182, 22, 3, 3, "F");
+
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(51, 65, 85);
+    doc.text(`Total Questions: ${totalQuestions}`, 20, startY + 9);
+    doc.text(`Score: ${correctCount}/${totalQuestions}`, 75, startY + 9);
+    doc.text(`Accuracy: ${accuracy}%`, 130, startY + 9);
+
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(22, 101, 52); // green
+    doc.text(`Correct: ${correctCount}`, 20, startY + 16);
+    doc.setTextColor(153, 27, 27); // red
+    doc.text(`Incorrect: ${incorrectCount}`, 75, startY + 16);
+    doc.setTextColor(71, 85, 105); // slate
+    doc.text(`Unanswered: ${unansweredCount}`, 130, startY + 16);
+
+    // Question-by-question breakdown table
+    const tableRows = quiz.questions.map((q, idx) => {
+      const selected = answers[idx];
+      const selectedText = selected !== null && selected !== undefined ? q.options[selected] || `Option ${selected + 1}` : "Not Answered";
+      const correctText = q.options[q.correctAnswerIndex] || `Option ${q.correctAnswerIndex + 1}`;
+      const status = selected === q.correctAnswerIndex ? "CORRECT" : selected === null ? "UNANSWERED" : "INCORRECT";
+
+      return [
+        `Q${idx + 1}`,
+        q.questionText,
+        selectedText,
+        correctText,
+        status,
+      ];
+    });
+
+    autoTable(doc, {
+      startY: startY + 28,
+      head: [["#", "Question", "Your Answer", "Correct Answer", "Status"]],
+      body: tableRows,
+      theme: "striped",
+      headStyles: {
+        fillColor: [79, 70, 229], // Indigo 600
+        textColor: [255, 255, 255],
+        fontStyle: "bold",
+        fontSize: 9,
+      },
+      bodyStyles: {
+        fontSize: 8,
+        cellPadding: 3,
+        textColor: [30, 41, 59],
+      },
+      columnStyles: {
+        0: { cellWidth: 10, halign: "center" },
+        1: { cellWidth: 70 },
+        2: { cellWidth: 42 },
+        3: { cellWidth: 42 },
+        4: { cellWidth: 18, halign: "center" },
+      },
+      didParseCell: function (data) {
+        if (data.section === "body" && data.column.index === 4) {
+          if (data.cell.raw === "CORRECT") {
+            data.cell.styles.textColor = [22, 163, 74];
+            data.cell.styles.fontStyle = "bold";
+          } else if (data.cell.raw === "INCORRECT") {
+            data.cell.styles.textColor = [220, 38, 38];
+            data.cell.styles.fontStyle = "bold";
+          } else {
+            data.cell.styles.textColor = [100, 116, 139];
+          }
+        }
+      },
+      margin: { left: 14, right: 14 },
+    });
+
+    const safeTitle = quiz.title.replace(/[^a-zA-Z0-9_-]/g, "_");
+    doc.save(`${safeTitle}_Results.pdf`);
+  };
 
   return (
     <div className="min-h-screen p-4 bg-gradient-to-r from-[#392a5c] to-[#030008]">
@@ -159,14 +272,24 @@ export default function QuizStart() {
             <div className="text-center space-y-6">
               <h2 className="text-2xl font-bold">Quiz Completed!</h2>
               <p className="text-lg">
-                You scored {score} out of {quiz.questions.length}
+                You scored <span className="font-bold text-indigo-600">{correctCount}</span> out of{" "}
+                <span className="font-bold">{quiz.questions.length}</span> ({accuracy}%)
               </p>
-              <button
-                onClick={handleRestart}
-                className="w-full py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition"
-              >
-                Restart Quiz
-              </button>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <button
+                  onClick={exportResultPDF}
+                  className="flex-1 flex items-center justify-center gap-2 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold transition shadow-md"
+                >
+                  <FaFilePdf size={18} />
+                  Export Results as PDF
+                </button>
+                <button
+                  onClick={handleRestart}
+                  className="flex-1 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition shadow-md"
+                >
+                  Restart Quiz
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -174,7 +297,7 @@ export default function QuizStart() {
         {/* Right: Live Points & Stats */}
         <div className="flex flex-col items-center justify-center">
           <h2 className="text-2xl font-bold mb-6">Live Quiz Stats</h2>
-          <p className="mb-3 text-lg">Current Score: {score}</p>
+          <p className="mb-3 text-lg">Current Score: {isFinished ? correctCount : score}</p>
           <ResponsiveContainer width="100%" height={250}>
             {isFinished ? (
               <PieChart>

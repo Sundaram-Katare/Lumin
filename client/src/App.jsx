@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+﻿import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import AddQuiz from './pages/AddQuiz';
 import Trivia from './pages/Trivia';
@@ -12,7 +12,7 @@ import LiveQuiz from './pages/LiveQuiz';
 import Code from './pages/Code';
 
 import GenerateAI from './pages/GenerateAI';
-import FAQ from './pages/FAQ'
+import FAQ from './pages/FAQ';
 
 function App() {
   return (
@@ -30,7 +30,7 @@ function App() {
         <Route path='/live' element={<LiveQuiz />} />
         <Route path='/code' element={<Code /> } />
         <Route path='/generate' element={<GenerateAI />} />
-        <Route path='/code' element={<Code/> } />
+        <Route path='/faq' element={<FAQ />} />
         <Route path='/FAQ' element={<FAQ />} />
       </Routes>
     </Router>
