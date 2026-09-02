@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../feature/auth/authSlice";
 import { motion } from "framer-motion";
 import { FiMenu, FiX } from "react-icons/fi";
-import { Sparkles } from "lucide-react";
+import { Moon, Sparkles, Sun } from "lucide-react";
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -12,6 +12,14 @@ export default function Navbar() {
   const dispatch = useDispatch();
 
   const [menuOpen, setMenuOpen] = useState(false);
+  const [theme, setTheme] = useState(() => localStorage.getItem("theme") || "dark");
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => setTheme((currentTheme) => currentTheme === "dark" ? "light" : "dark");
 
   const handleLogout = () => {
     dispatch(logout());
@@ -56,6 +64,15 @@ export default function Navbar() {
 
       {/* User Section */}
       <div className="hidden md:flex items-center gap-4">
+        <button
+          type="button"
+          onClick={toggleTheme}
+          className="theme-toggle rounded-full p-2 transition"
+          aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+          title={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+        >
+          {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
+        </button>
         {user ? (
           <>
             <motion.button
@@ -84,7 +101,15 @@ export default function Navbar() {
       </div>
 
       {/* Mobile Hamburger */}
-      <div className="md:hidden flex items-center">
+      <div className="md:hidden flex items-center gap-2">
+        <button
+          type="button"
+          onClick={toggleTheme}
+          className="theme-toggle rounded-full p-2 transition"
+          aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+        >
+          {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
+        </button>
         <button onClick={() => setMenuOpen(!menuOpen)}>
           {menuOpen ? <FiX size={28} /> : <FiMenu size={28} />}
         </button>
@@ -92,7 +117,7 @@ export default function Navbar() {
 
       {/* Mobile Dropdown Menu */}
       {menuOpen && (
-        <div className="absolute top-16 left-0 w-full bg-[#1a1032] text-white flex flex-col items-center gap-4 py-6 shadow-lg rounded-b-2xl md:hidden z-50">
+        <div className="mobile-nav-menu absolute top-16 left-0 w-full bg-[#1a1032] text-white flex flex-col items-center gap-4 py-6 shadow-lg rounded-b-2xl md:hidden z-50">
           <h2
             className="cursor-pointer bg-purple-300/30 rounded-xl px-4 py-2 w-11/12 text-center"
             onClick={() => { navigate("/trivia"); setMenuOpen(false); }}
